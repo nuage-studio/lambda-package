@@ -13,8 +13,7 @@ def package(output_file: str, root_path="."):
     :param root_path        The path of the directory to package up
     """
     excludes = find_excludes()
-
-    paths = find_paths(root_path=Path(root_path), excludes=excludes)
+    (paths, tree) = find_paths(root_path=Path(root_path), excludes=excludes)
     zip_package(paths=paths, fp=output_file)
 
 
@@ -43,8 +42,14 @@ def find_paths(root_path, excludes):
 
     :param root_path     The directory to be searched, as a `pathlib` path
     :param excludes      A list of .gitignore exclude patterns, or a pathspec
+    :return A tuple with two elements:
+        files_list  A list of pathlib files which did not meet the exclusion criteria
+        files_tree  A recursive tuple in the form `(name, dirs, files)`,
+                    similar to the output of `os.walk`, containing files which did not
+                    meet the exclusion criteria
     """
-    files = []
+    files_list = []
+    files_tree = (root_path.name, [], [])
 
     exclude_spec = (
         excludes
@@ -55,11 +60,14 @@ def find_paths(root_path, excludes):
     for subpath in root_path.iterdir():
         if not exclude_spec.match_file(subpath):
             if subpath.is_dir():
-                files.extend(find_paths(subpath, exclude_spec))
+                (sub_files_list, sub_files_tree) = find_paths(subpath, exclude_spec)
+                files_tree[1].append(sub_files_tree)
+                files_list.extend(sub_files_list)
             else:
-                files.append(subpath)
+                files_tree[2].append(subpath)
+                files_list.append(subpath)
 
-    return files
+    return (files_list, files_tree)
 
 
 def zip_package(paths, fp, compression=zipfile.ZIP_DEFLATED):

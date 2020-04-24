@@ -8,7 +8,7 @@ def main():
     """
     Main entry point of the Command
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser("lambda_packaging")
     add_arguments(parser)
     args = parser.parse_args()
 

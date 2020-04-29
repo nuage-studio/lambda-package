@@ -1,14 +1,14 @@
 import argparse
 from pathlib import Path
 
-from .lambda_packaging import find_excludes, find_paths, zip_package
+from .lambda_package import find_excludes, find_paths, zip_package
 
 
 def main():
     """
     Main entry point of the Command
     """
-    parser = argparse.ArgumentParser("lambda_packaging")
+    parser = argparse.ArgumentParser("lambda_package")
     add_arguments(parser)
     args = parser.parse_args()
 

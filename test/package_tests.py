@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from lambda_packaging import find_paths
+from lambda_package import find_paths
 
 
 class PackageTests(unittest.TestCase):

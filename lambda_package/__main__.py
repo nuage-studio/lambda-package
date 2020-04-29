@@ -1,7 +1,8 @@
 import argparse
-from pathlib import Path
 
-from .lambda_package import find_excludes, find_paths, zip_package
+from lambda_package.configuration import Configuration
+
+from .lambda_package import package
 
 
 def main():
@@ -12,12 +13,11 @@ def main():
     add_arguments(parser)
     args = parser.parse_args()
 
-    # Find filepaths that should be added to the package
-    excludes = find_excludes()
-    (paths, tree) = find_paths(root_path=Path(args.path), excludes=excludes)
-    if args.output:
-        zip_package(paths=paths, fp=args.output)
-    else:
+    (_, tree) = package(
+        root_path=args.path, configuration=Configuration(output=args.output)
+    )
+
+    if not args.output:
         print_tree(tree)
 
 

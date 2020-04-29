@@ -25,7 +25,7 @@ as the command line.  For example:
 ```python
 from lambda_package import package
 
-package(root_path="src", output_file="app.zip")
+package(root_path="src", Configuration(output="app.zip"))
 ```
 
 

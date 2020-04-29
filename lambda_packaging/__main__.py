@@ -12,16 +12,13 @@ def main():
     add_arguments(parser)
     args = parser.parse_args()
 
-    try:
-        # Find filepaths that should be added to the package
-        excludes = find_excludes()
-        (paths, tree) = find_paths(root_path=Path(args.path), excludes=excludes)
-        if args.output:
-            zip_package(paths=paths, fp=args.output)
-        else:
-            print_tree(tree)
-    except Exception as e:
-        print("Error: ", e)
+    # Find filepaths that should be added to the package
+    excludes = find_excludes()
+    (paths, tree) = find_paths(root_path=Path(args.path), excludes=excludes)
+    if args.output:
+        zip_package(paths=paths, fp=args.output)
+    else:
+        print_tree(tree)
 
 
 def add_arguments(parser):

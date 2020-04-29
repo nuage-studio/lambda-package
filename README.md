@@ -9,7 +9,7 @@ covered by the `.gitignore` file in the current directory.
 To use on the command line, you should install the package using pip, and then use the following command:
 
 ```
-python -m lambda_packaging path [--output OUTPUT]
+python -m lambda_package path [--output OUTPUT]
 ```
 
 where `path` is the path to the source directory which you wish to package, and the
@@ -23,7 +23,7 @@ The package also exposes a function named `package`, which performs the same fun
 as the command line.  For example:
 
 ```python
-from lambda_packaging import package
+from lambda_package import package
 
 package(root_path="src", output_file="app.zip")
 ```

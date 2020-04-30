@@ -32,21 +32,30 @@ class Configuration:
     @staticmethod
     def create_from_config_file():
         """
-        This method creates a Configuration object by attempting to read parameters
-        from the `.lambda-packagerc` file.  Default values are used for any values
-        not present, or if the file does not exist.
+        This methods creates a Configuration object by attempting to read parameters
+        from two TOML files: `.lambda-packagerc` and `setup.cfg`.  The
+        `.lambda-packagerc` takes precedence for any values which appear in both,
+        and defaults are used for any values which are not present, or if the files do
+        not exist.  In the TOML files parameters must be under a section called
+        `[lambda-package]`, and the parameter key names are the same as the attributes
+        of this class.
         """
-        config_dict = Configuration.read_config_dict()
+        rc_config_dict = Configuration.read_config_dict(ConfigFileName)
+        setup_config_dict = Configuration.read_config_dict(SetupFileName)
+        config_dict = {**setup_config_dict, **rc_config_dict}
+
         return Configuration(output=config_dict.get("output"))
 
     @staticmethod
-    def read_config_dict():
+    def read_config_dict(path: str):
         """
-        Reads lambda-package TOML configuration into a dictionary, or returns
-        an empty dictionary if the file does not exist.
+        Reads the [lambda-package] section from a TOML configuration file into a
+        dictionary, or returns an empty dictionary if the file does not exist.
+
+        :param path     The path to the TOML configuration file.
         """
-        if Path(ConfigFileName).exists():
-            config_dict = load(ConfigFileName)
+        if Path(path).exists():
+            config_dict = load(path)
 
             if TomlSectionName in config_dict.keys():
                 return config_dict.get(TomlSectionName)

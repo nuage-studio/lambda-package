@@ -68,3 +68,11 @@ Code quality configuration files:
 - IDE-agnostic coding style settings are set in the [.editorconfig](.editorconfig) file
 - Python-related settings are set in the [setup.cfg](setup.cfg) file
 - Pre-commit-related settings are set in the [.pre-commit-config.yaml](.pre-commit-config.yaml) file
+
+## Unit tests
+
+* To run the unit tests (you may also want to instantiate a virtual environment in the root directory):
+
+```
+python setup.py test
+```

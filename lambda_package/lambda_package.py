@@ -49,10 +49,7 @@ def find_excludes():
     Reads a list of exclude patterns from the `.gitignore` file in the local directory.
     A pattern for excluding hidden files is also added.
     """
-    excludes = [
-        ".*",  # Hidden files
-    ]
-    # Read .gitignore
+    excludes = []
     gitignore = Path(".gitignore")
     if gitignore.exists():
         with gitignore.open() as f:

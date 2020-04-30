@@ -1,4 +1,5 @@
 from pathlib import Path
+from platform import python_version
 from typing import List, Optional
 
 from toml import load
@@ -12,6 +13,9 @@ class Configuration:
     """
     Represents the packager configuration.  Instances of this object can be
     passed to the `package` method.
+
+    To create a Configuration object, either use the constructor directly, or call
+    the `create_from_config_file` method.
     """
 
     output: Optional[str]
@@ -25,9 +29,41 @@ class Configuration:
     A list of file exclude patterns which should not be packaged.
     """
 
-    def __init__(self, output: Optional[str] = None, exclude: List[str] = []):
+    requirements: Optional[str]
+    """
+    The path to the requirements.txt file if Python dependencies are to be packaged.
+    """
+
+    layer_output: Optional[str]
+    """
+    Path to a folder where requirement outputs should be stored.
+    """
+
+    use_docker: bool
+    """
+    Whether or not the Lambda layer should be compiled using a Docker image.
+    """
+
+    python_version: str
+    """
+    The Python version used by Docker to package the requirements.
+    """
+
+    def __init__(
+        self,
+        output: Optional[str] = None,
+        exclude: List[str] = None,
+        requirements: Optional[str] = None,
+        layer_output: Optional[str] = None,
+        use_docker: Optional[bool] = True,
+        python_version: Optional[str] = python_version(),
+    ):
         self.output = output
         self.exclude = exclude
+        self.requirements = requirements
+        self.layer_output = layer_output
+        self.use_docker = use_docker
+        self.python_version = python_version
 
     @staticmethod
     def create_from_config_file():
@@ -43,10 +79,7 @@ class Configuration:
         rc_config_dict = Configuration.read_config_dict(ConfigFileName)
         setup_config_dict = Configuration.read_config_dict(SetupFileName)
         config_dict = {**setup_config_dict, **rc_config_dict}
-
-        return Configuration(
-            output=config_dict.get("output"), exclude=config_dict.get("exclude"),
-        )
+        return Configuration(**config_dict)
 
     @staticmethod
     def read_config_dict(path: str):

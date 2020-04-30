@@ -8,12 +8,16 @@ from lambda_package.configuration import Configuration
 def package(root_path=".", configuration: Configuration = None):
     """
     Creates a zip package of the given directory, while excluding any files which
-    are excluded by the `.gitignore`.  If no output file is specified in the
-    configuration then the zip package will not be generated, but the included files
-    will still be returned.
+    have been specified in the exclude patterns.
 
     If no configuration value is provided, the function will attempt to read config
     values from disk.  See `Configuration.create_from_config_file` for more details.
+
+    If no exclude patterns are given in the configuration, then the function will
+    attempt to read patterns from the `.gitignore` file.
+
+    If no output file is specified in the configuration then the zip package will not be
+    generated, but the included files will still be returned.
 
     :param root_path        The path of the directory to package up
     :param configuration    The packager configuration.  See the `Configuration` class.
@@ -24,11 +28,15 @@ def package(root_path=".", configuration: Configuration = None):
                     meet the exclusion criteria
     """
 
-    excludes = find_excludes()
-    (paths, tree) = find_paths(root_path=Path(root_path), excludes=excludes)
-
     if not configuration:
         configuration = Configuration.create_from_config_file()
+
+    if not configuration.exclude:
+        configuration.exclude = find_excludes()
+
+    (paths, tree) = find_paths(
+        root_path=Path(root_path), excludes=configuration.exclude
+    )
 
     if configuration.output:
         zip_package(paths=paths, fp=configuration.output)
@@ -50,7 +58,9 @@ def find_excludes():
         with gitignore.open() as f:
             excludes += f.read().split("\n")
     else:
-        raise ValueError("No .gitignore found")
+        raise ValueError(
+            "No exclude configuration option and no .gitignore file present"
+        )
     return excludes
 
 

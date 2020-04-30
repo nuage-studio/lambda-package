@@ -7,6 +7,17 @@ from lambda_package.configuration import ConfigFileName, Configuration, SetupFil
 
 class PackageTests(unittest.TestCase):
     @mock.patch("lambda_package.Configuration.read_config_dict")
+    def test_create_from_config_file(self, read_config_dict_mock: Mock):
+        read_config_dict_mock.return_value = {
+            "output": "my_output",
+            "exclude": ["my_exclude1", "my_exclude2"],
+        }
+
+        configuration = Configuration.create_from_config_file()
+        self.assertEqual(configuration.output, "my_output")
+        self.assertEqual(configuration.exclude, ["my_exclude1", "my_exclude2"])
+
+    @mock.patch("lambda_package.Configuration.read_config_dict")
     def test_when_rc_file_has_output_and_setup_file_doesnt_then_config_has_rc_value(
         self, read_config_dict_mock: Mock
     ):

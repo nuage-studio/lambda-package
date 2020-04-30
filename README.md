@@ -2,7 +2,8 @@
 
 This repository provides both a library function and command-line tool to package up Lambda functions.
 Given a directory, it will package all the files in the directory into a zip file, but ignoring any files
-covered by the `.gitignore` file in the current directory.
+covered exclude patterns.  If exclude patterns are not given in the configuation, then these patterns
+will be read from the `.gitignore` file.
 
 ## Command line useage
 
@@ -27,6 +28,27 @@ from lambda_package import package
 
 package(root_path="src", Configuration(output="app.zip"))
 ```
+
+## Configuration
+
+Further configuration can be specified in either the `.lambda-packagerc` or `setup.cfg`
+files, with the former taking priority.  The `package` function will look for these
+files by default if no `Configuration` object is passed in.
+
+An example `.lambda-packagerc` might be:
+
+```toml
+[lambda-package]
+output = "app.zip"
+exclude = ["node_modules", "*.bak"]
+```
+
+Note that the `exclude` option overrides any patterns in the `.gitignore` file.
+
+| Name          | Description                                                                     |
+|---------------|---------------------------------------------------------------------------------|
+| `output`      | The path of the zip file to be generated                                        |
+| `exclude`     | A list of exclude pattern strings.  If not given, `.gitignore` is used instead. |
 
 
 # Development

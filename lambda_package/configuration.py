@@ -44,7 +44,9 @@ class Configuration:
         setup_config_dict = Configuration.read_config_dict(SetupFileName)
         config_dict = {**setup_config_dict, **rc_config_dict}
 
-        return Configuration(output=config_dict.get("output"))
+        return Configuration(
+            output=config_dict.get("output"), exclude=config_dict.get("exclude"),
+        )
 
     @staticmethod
     def read_config_dict(path: str):

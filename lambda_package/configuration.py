@@ -8,6 +8,15 @@ ConfigFileName = ".lambda-packagerc"
 SetupFileName = "setup.cfg"
 TomlSectionName = "lambda-package"
 
+ValidKeys = [
+    "output",
+    "exclude",
+    "requirements",
+    "layer_output",
+    "use_docker",
+    "python_version",
+]
+
 
 class Configuration:
     """
@@ -79,6 +88,11 @@ class Configuration:
         rc_config_dict = Configuration.read_config_dict(ConfigFileName)
         setup_config_dict = Configuration.read_config_dict(SetupFileName)
         config_dict = {**setup_config_dict, **rc_config_dict}
+
+        for key in config_dict.keys():
+            if key not in ValidKeys:
+                raise KeyError(f"Parameter {key} is not valid")
+
         return Configuration(**config_dict)
 
     @staticmethod

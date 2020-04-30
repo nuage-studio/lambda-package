@@ -61,3 +61,12 @@ class PackageTests(unittest.TestCase):
 
         configuration = Configuration.create_from_config_file()
         self.assertEqual(configuration.output, "myoutput_rc")
+
+    @mock.patch("lambda_package.Configuration.read_config_dict")
+    def test_when_config_file_contains_invalid_key_then_throw_exception(
+        self, read_config_dict_mock: Mock
+    ):
+        read_config_dict_mock.return_value = {"blah": 123}
+
+        with self.assertRaises(KeyError):
+            Configuration.create_from_config_file()

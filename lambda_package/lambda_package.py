@@ -9,11 +9,14 @@ def package(root_path=".", configuration: Configuration = None):
     """
     Creates a zip package of the given directory, while excluding any files which
     are excluded by the `.gitignore`.  If no output file is specified in the
-    configuration the zip package will not be generated, but the included files will
-    still be returned.
+    configuration then the zip package will not be generated, but the included files
+    will still be returned.
+
+    If no configuration value is provided, the function will attempt to read config
+    values from disk.  See `Configuration.create_from_config_file` for more details.
 
     :param root_path        The path of the directory to package up
-    :param configuration    The packager configuration.  See the Configuration class.
+    :param configuration    The packager configuration.  See the `Configuration` class.
     :return A tuple with two elements:
         files_list  A list of pathlib files which did not meet the exclusion criteria
         files_tree  A recursive tuple in the form `(name, dirs, files)`,
@@ -24,7 +27,10 @@ def package(root_path=".", configuration: Configuration = None):
     excludes = find_excludes()
     (paths, tree) = find_paths(root_path=Path(root_path), excludes=excludes)
 
-    if configuration and configuration.output:
+    if not configuration:
+        configuration = Configuration.create_from_config_file()
+
+    if configuration.output:
         zip_package(paths=paths, fp=configuration.output)
 
     return (paths, tree)

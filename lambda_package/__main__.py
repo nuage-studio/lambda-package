@@ -12,13 +12,15 @@ def main():
     parser = argparse.ArgumentParser("lambda_package")
     add_arguments(parser)
     args = parser.parse_args()
+    configuration = Configuration.create_from_config_file()
+    configuration.output = args.output if args.output else configuration.output
 
-    (_, tree) = package(
-        root_path=args.path, configuration=Configuration(output=args.output)
-    )
+    (_, tree) = package(root_path=args.path, configuration=configuration)
 
-    if not args.output:
+    if not configuration.output:
         print_tree(tree)
+    else:
+        print(f"Successfully created package {configuration.output}")
 
 
 def add_arguments(parser):

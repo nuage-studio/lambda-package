@@ -78,3 +78,40 @@ class PackageTests(unittest.TestCase):
 
         find_excludes_mock.assert_not_called()
         find_paths_mock.assert_called_once_with(root_path=ANY, excludes=["myexclude"])
+
+    @mock.patch("lambda_package.lambda_package.build_requirements")
+    @mock.patch("lambda_package.lambda_package.get_files_in_directory")
+    @mock.patch("lambda_package.lambda_package.find_excludes")
+    @mock.patch("lambda_package.lambda_package.find_paths")
+    @mock.patch("lambda_package.lambda_package.zip_package")
+    def test_when_requirements_given_then_call_build_requirements(
+        self,
+        zip_package_mock: Mock,
+        find_paths_mock: Mock,
+        find_excludes_mock: Mock,
+        get_files_in_directory_mock: Mock,
+        build_requirements_mock: Mock,
+    ):
+        find_excludes_mock.return_value = []
+        find_paths_mock.return_value = (["mypath"], "")
+        get_files_in_directory_mock.return_value = ["myreqfile"]
+        package(configuration=Configuration(requirements="my_requirements"))
+        build_requirements_mock.assert_called_once()
+
+    @mock.patch("lambda_package.lambda_package.build_requirements")
+    @mock.patch("lambda_package.lambda_package.get_files_in_directory")
+    @mock.patch("lambda_package.lambda_package.find_excludes")
+    @mock.patch("lambda_package.lambda_package.find_paths")
+    @mock.patch("lambda_package.lambda_package.zip_package")
+    def test_when_requirements_not_given_then_do_not_call_build_requirements(
+        self,
+        zip_package_mock: Mock,
+        find_paths_mock: Mock,
+        find_excludes_mock: Mock,
+        get_files_in_directory_mock: Mock,
+        build_requirements_mock: Mock,
+    ):
+        find_excludes_mock.return_value = []
+        find_paths_mock.return_value = ("mypaths", "")
+        package(configuration=Configuration())
+        build_requirements_mock.assert_not_called()

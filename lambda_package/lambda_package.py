@@ -1,8 +1,10 @@
 import zipfile
+from os import walk
 from pathlib import Path
 
 import pathspec
 from lambda_package.configuration import Configuration
+from lambda_package.requirements import build_requirements
 
 
 def package(root_path=".", configuration: Configuration = None):
@@ -37,6 +39,20 @@ def package(root_path=".", configuration: Configuration = None):
     (paths, tree) = find_paths(
         root_path=Path(root_path), excludes=configuration.exclude
     )
+
+    if configuration.requirements:
+        requirements_dir = build_requirements(configuration)
+        requirements_files = get_files_in_directory(requirements_dir)
+
+        # TODO ONLY do this if layer not given
+        paths.extend(requirements_files)
+
+        # If not layer dir
+        # add everything there into paths
+        # else
+        # zip package with paths
+
+        # delete temp dir
 
     if configuration.output:
         zip_package(paths=paths, fp=configuration.output)
@@ -94,6 +110,19 @@ def find_paths(root_path, excludes):
                 files_list.append(subpath)
 
     return (files_list, files_tree)
+
+
+def get_files_in_directory(dir_name: str):
+    """
+    Returns a list of all the files in the given directory.  Recursively searches
+    subdirectories.
+    """
+    filenames = []
+
+    for entry in walk(dir_name):
+        filenames.extend(entry[2])
+
+    return filenames
 
 
 def zip_package(paths, fp, compression=zipfile.ZIP_DEFLATED):

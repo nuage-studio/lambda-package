@@ -11,7 +11,7 @@ setup(
     url="https://github.com/nuage-studio/lambda-package",
     packages=find_packages(),
     python_requires=">=3.7",
-    install_requires=["pathspec>=0.8.0", "toml>=0.10.0"],
+    install_requires=["pathspec>=0.8.0", "toml>=0.10.0", "docker>=4.2.0"],
     test_requires=[],
     test_suite="test",
 )

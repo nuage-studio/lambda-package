@@ -37,6 +37,9 @@ def build_requirements(configuration: Configuration):
             volumes=vols,
         )
 
+        # Remove the copied requirements file
+        requirements_dest_path.unlink()
+
         return temp_dir
 
     else:

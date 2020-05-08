@@ -13,6 +13,7 @@ class RequirementsTests(unittest.TestCase):
     """
 
     @mock.patch("pathlib.Path.mkdir")
+    @mock.patch("pathlib.Path.unlink")
     @mock.patch("lambda_package.requirements.copy")
     @mock.patch("lambda_package.requirements.generate_temp_task_dir")
     @mock.patch("lambda_package.requirements.from_env")
@@ -21,6 +22,7 @@ class RequirementsTests(unittest.TestCase):
         from_env_mock: Mock,
         generate_temp_task_dir_mock: Mock,
         copy_mock: Mock,
+        unlink_mock,
         mkdir_mock,
     ):
         generate_temp_task_dir_mock.return_value = "my_temp_dir"
@@ -42,6 +44,7 @@ class RequirementsTests(unittest.TestCase):
         )
 
     @mock.patch("pathlib.Path.mkdir")
+    @mock.patch("pathlib.Path.unlink")
     @mock.patch("lambda_package.requirements.copy")
     @mock.patch("lambda_package.requirements.generate_temp_task_dir")
     @mock.patch("lambda_package.requirements.from_env")
@@ -50,6 +53,7 @@ class RequirementsTests(unittest.TestCase):
         from_env_mock: Mock,
         generate_temp_task_dir_mock: Mock,
         copy_mock: Mock,
+        unlink_mock,
         mkdir_mock,
     ):
         generate_temp_task_dir_mock.return_value = "my_temp_dir"

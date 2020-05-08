@@ -8,6 +8,10 @@ from lambda_package.requirements import CacheDir, build_requirements
 
 
 class RequirementsTests(unittest.TestCase):
+    """
+    General unit tests for the `requirements` module
+    """
+
     @mock.patch("pathlib.Path.mkdir")
     @mock.patch("lambda_package.requirements.copy")
     @mock.patch("lambda_package.requirements.generate_temp_task_dir")

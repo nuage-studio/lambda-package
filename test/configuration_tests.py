@@ -5,7 +5,11 @@ from unittest.mock import Mock
 from lambda_package.configuration import ConfigFileName, Configuration, SetupFileName
 
 
-class PackageTests(unittest.TestCase):
+class ConfigurationTests(unittest.TestCase):
+    """
+    Unit tests for the `Configuration` class
+    """
+
     @mock.patch("lambda_package.Configuration.read_config_dict")
     def test_create_from_config_file(self, read_config_dict_mock: Mock):
         read_config_dict_mock.return_value = {

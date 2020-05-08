@@ -29,7 +29,7 @@ def build_requirements(configuration: Configuration):
         client = from_env()
         client.containers.run(
             f"lambci/lambda:build-python{configuration.python_version}",
-            f"pip install -t /var/task/ -r /var/task/{requirements_src_path.name}",
+            f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name}",
             volumes=vols,
         )
 

@@ -1,6 +1,7 @@
 import zipfile
 from os import walk
 from pathlib import Path
+from typing import List, Tuple
 
 import pathspec
 from lambda_package.configuration import Configuration
@@ -39,23 +40,27 @@ def package(root_path=".", configuration: Configuration = None):
     (paths, tree) = find_paths(
         root_path=Path(root_path), excludes=configuration.exclude
     )
+    zip_paths = get_zip_package_paths(paths=paths, root_dir=root_path)
 
     if configuration.requirements:
         requirements_dir = build_requirements(configuration)
         requirements_files = get_files_in_directory(requirements_dir)
+        requirements_zip_paths = get_zip_package_paths(
+            paths=requirements_files, root_dir=requirements_dir
+        )
 
-        # TODO ONLY do this if layer not given
-        paths.extend(requirements_files)
-
-        # If not layer dir
-        # add everything there into paths
-        # else
-        # zip package with paths
+        if configuration.layer_output:
+            zip_package(
+                paths=requirements_zip_paths, fp=configuration.layer_output,
+            )
+        else:
+            zip_paths.extend(requirements_zip_paths)
 
         # delete temp dir
+        print("reqdir", requirements_dir)
 
     if configuration.output:
-        zip_package(paths=paths, fp=configuration.output)
+        zip_package(paths=zip_paths, fp=configuration.output)
 
     return (paths, tree)
 
@@ -120,17 +125,30 @@ def get_files_in_directory(dir_name: str):
     filenames = []
 
     for entry in walk(dir_name):
-        filenames.extend(entry[2])
+        root_dir = entry[0]
+        dir_files = entry[2]
+        filenames.extend([Path(root_dir).joinpath(file) for file in dir_files])
 
     return filenames
 
 
-def zip_package(paths, fp, compression=zipfile.ZIP_DEFLATED):
+def get_zip_package_paths(paths: List[Path], root_dir=None) -> List[Tuple[Path, Path]]:
     """
-    Takes a list of filepaths and compress those files into a zip archive
+    Given a list of Path objects, returns a list of tuples with the original path and
+    the destination path within the package zip file.  The destination paths are
+    simply the source paths but relative to `root_dir`.
     """
+    return [(path, path.relative_to(root_dir)) for path in paths]
+
+
+def zip_package(paths: List[Path], fp, compression=zipfile.ZIP_DEFLATED):
+    """
+    Takes a list of Path objects and compress those files into a zip archive
+    """
+
     with zipfile.ZipFile(
         file=fp, mode="w", compression=compression, compresslevel=9
     ) as z:
-        for p in paths:
-            z.write(p)
+        for path in paths:
+            (local_path, zip_path) = path
+            z.write(filename=str(path[0]), arcname=str(path[1]))

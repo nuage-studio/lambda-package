@@ -103,3 +103,6 @@ Code quality configuration files:
 ```
 python setup.py test
 ```
+
+The test file names are in the format `{source file name}_tests.py`, or
+`{source file name}_{function name}_tests.py` for functions which have a large number of tests.

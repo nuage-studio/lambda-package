@@ -53,7 +53,7 @@ Note that the `exclude` option overrides any patterns in the `.gitignore` file.
 | `requirements`   | The path to the requirements.txt file if Python dependencies are to be packaged.      |
 | `layer_output`   | Path to a folder where requirement outputs should be stored rather than the package.  |
 | `use_docker`     | Whether or not the Lambda layer dependencies should be compiled using a Docker image. |
-| `python_version` | The Python version used by Docker to package the requirements.                        |
+| `python_version` | The Python version used by Docker to package the requirements.  Must be in the format `[major].[minor]` |
 
 
 # Development

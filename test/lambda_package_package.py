@@ -7,6 +7,7 @@ from lambda_package import package
 from lambda_package.configuration import Configuration
 
 
+@mock.patch("lambda_package.lambda_package.rmtree")
 @mock.patch("lambda_package.lambda_package.find_paths")
 @mock.patch("lambda_package.lambda_package.zip_package")
 @mock.patch("lambda_package.Configuration.create_from_config_file")
@@ -26,6 +27,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_paths_mock.return_value = ("", "")
         package(configuration=Configuration())
@@ -39,6 +41,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_paths_mock.return_value = ([Path("mypaths")], "")
         package(configuration=Configuration(output="myoutput"))
@@ -54,6 +57,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_paths_mock.return_value = ([Path("src/mypaths")], "")
         package(configuration=Configuration(output="myoutput"), root_path="src")
@@ -69,6 +73,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         create_from_config_file_mock.return_value = Configuration()
         find_paths_mock.return_value = ([Path("mypaths")], "")
@@ -83,6 +88,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         create_from_config_file_mock.return_value = Configuration()
         find_paths_mock.return_value = ([Path("mypaths")], "")
@@ -97,6 +103,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = ["gitignoreex"]
         find_paths_mock.return_value = ([Path("mypaths")], "")
@@ -113,6 +120,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypaths")], "")
@@ -129,6 +137,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath")], "")
@@ -145,6 +154,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypaths")], "")
@@ -159,6 +169,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath1")], "")
@@ -202,6 +213,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         create_from_config_file_mock: Mock,
         zip_package_mock: Mock,
         find_paths_mock: Mock,
+        rmtree_mock: Mock,
     ):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath1")], "")

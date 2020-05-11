@@ -7,16 +7,16 @@ from lambda_package.configuration import Configuration
 from lambda_package.requirements import CacheDir, build_requirements
 
 
+@mock.patch("pathlib.Path.mkdir")
+@mock.patch("pathlib.Path.unlink")
+@mock.patch("lambda_package.requirements.copy")
+@mock.patch("lambda_package.requirements.generate_temp_task_dir")
+@mock.patch("lambda_package.requirements.from_env")
 class RequirementsTests(unittest.TestCase):
     """
     General unit tests for the `requirements` module
     """
 
-    @mock.patch("pathlib.Path.mkdir")
-    @mock.patch("pathlib.Path.unlink")
-    @mock.patch("lambda_package.requirements.copy")
-    @mock.patch("lambda_package.requirements.generate_temp_task_dir")
-    @mock.patch("lambda_package.requirements.from_env")
     def test_when_requirements_given_and_use_docker_given_then_docker_is_called(
         self,
         from_env_mock: Mock,
@@ -43,11 +43,6 @@ class RequirementsTests(unittest.TestCase):
             volumes={str(expected_temp_dir): {"bind": "/var/task", "mode": "z"}},
         )
 
-    @mock.patch("pathlib.Path.mkdir")
-    @mock.patch("pathlib.Path.unlink")
-    @mock.patch("lambda_package.requirements.copy")
-    @mock.patch("lambda_package.requirements.generate_temp_task_dir")
-    @mock.patch("lambda_package.requirements.from_env")
     def test_when_build_requirements_is_called_then_returns_requirements_directory(
         self,
         from_env_mock: Mock,

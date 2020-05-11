@@ -57,7 +57,6 @@ def package(root_path=".", configuration: Configuration = None):
             zip_paths.extend(requirements_zip_paths)
 
         # delete temp dir
-        print("reqdir", requirements_dir)
 
     if configuration.output:
         zip_package(paths=zip_paths, fp=configuration.output)

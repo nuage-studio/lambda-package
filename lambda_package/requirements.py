@@ -3,6 +3,7 @@ from random import choice
 from re import compile
 from shutil import copy
 from string import ascii_lowercase
+from tempfile import gettempdir
 
 from docker import from_env
 from lambda_package.lambda_package import Configuration, Path
@@ -12,14 +13,14 @@ The functions in this file help to build an Lambda's Python requirements into a
 temporary directory, either using Docker or using pip on the local machine.
 """
 
-CacheDir = ".lambda-package"
+TempDir = gettempdir()
 VersionRegex = compile("(^[0-9]+\\.[0-9]+)(\\.[0-9]+)?$")
 
 
 def build_requirements(configuration: Configuration):
     if configuration.use_docker:
         # Create a temporary directory for /var/task
-        temp_dir = Path(CacheDir).joinpath(generate_temp_task_dir()).absolute()
+        temp_dir = Path(TempDir).joinpath(generate_temp_task_dir()).absolute()
         temp_dir.mkdir(parents=True)
 
         # Copy the requirements file into the directory

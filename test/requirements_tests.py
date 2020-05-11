@@ -4,7 +4,7 @@ from unittest import mock
 from unittest.mock import Mock
 
 from lambda_package.configuration import Configuration
-from lambda_package.requirements import CacheDir, build_requirements
+from lambda_package.requirements import TempDir, build_requirements
 
 
 @mock.patch("pathlib.Path.mkdir")
@@ -29,7 +29,7 @@ class RequirementsTests(unittest.TestCase):
         run_mock = Mock()
         from_env_mock.return_value = Mock()
         from_env_mock.return_value.containers.run = run_mock
-        expected_temp_dir = Path(CacheDir).joinpath("my_temp_dir").absolute()
+        expected_temp_dir = Path(TempDir).joinpath("my_temp_dir").absolute()
 
         build_requirements(
             Configuration(
@@ -55,7 +55,7 @@ class RequirementsTests(unittest.TestCase):
         run_mock = Mock()
         from_env_mock.return_value = Mock()
         from_env_mock.return_value.containers.run = run_mock
-        expected_temp_dir = Path(CacheDir).joinpath("my_temp_dir").absolute()
+        expected_temp_dir = Path(TempDir).joinpath("my_temp_dir").absolute()
 
         res = build_requirements(
             Configuration(requirements="my_requirements", use_docker=True)

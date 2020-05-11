@@ -45,15 +45,14 @@ exclude = ["node_modules", "*.bak"]
 
 Note that the `exclude` option overrides any patterns in the `.gitignore` file.
 
-| Name             | Description                                                                           |
-|------------------|---------------------------------------------------------------------------------------|
-| `output`         | The path of the zip file to be generated                                              |
-| `exclude`        | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
-| `exclude`        | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
-| `requirements`   | The path to the requirements.txt file if Python dependencies are to be packaged.      |
-| `layer_output`   | Path to a folder where requirement outputs should be stored rather than the package.  |
-| `use_docker`     | Whether or not the Lambda layer dependencies should be compiled using a Docker image. |
-| `python_version` | The Python version used by Docker to package the requirements.  Must be in the format `[major].[minor]` |
+| Name             | Default | Description                                                                           |
+|------------------|---------|---------------------------------------------------------------------------------------|
+| `output`         | `None`  | The path of the zip file to be generated                                              |
+| `exclude`        | `None`  | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
+| `requirements`   | `None`  | The path to the requirements.txt file if Python dependencies are to be packaged.      |
+| `layer_output`   | `None`  | Path to a folder where requirement outputs should be stored rather than the package.  |
+| `use_docker`     | `True`  | Whether or not the Lambda layer dependencies should be compiled using a Docker image. |
+| `python_version` | _Runtime version_  | The Python version used by Docker to package the requirements.  Must be in the format `[major].[minor]`, patch version will be ignored.             |
 
 
 # Development

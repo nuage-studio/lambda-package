@@ -32,7 +32,7 @@ def package(root_path=".", configuration: Configuration = None):
         configuration = Configuration.create_from_config_file()
 
     if not configuration.exclude:
-        configuration.exclude = find_excludes()
+        configuration.exclude = read_gitignore()
 
     (paths, tree) = find_paths(
         root_path=Path(root_path), excludes=configuration.exclude
@@ -44,7 +44,7 @@ def package(root_path=".", configuration: Configuration = None):
     return (paths, tree)
 
 
-def find_excludes():
+def read_gitignore():
     """
     Reads a list of exclude patterns from the `.gitignore` file in the local directory.
     A pattern for excluding hidden files is also added.

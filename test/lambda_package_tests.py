@@ -53,28 +53,28 @@ class PackageTests(unittest.TestCase):
         package(configuration=Configuration())
         create_from_config_file_mock.assert_not_called()
 
-    @mock.patch("lambda_package.lambda_package.find_excludes")
+    @mock.patch("lambda_package.lambda_package.read_gitignore")
     @mock.patch("lambda_package.lambda_package.find_paths")
     @mock.patch("lambda_package.lambda_package.zip_package")
     def test_when_config_has_no_excludes_then_read_gitignore(
-        self, zip_package_mock: Mock, find_paths_mock: Mock, find_excludes_mock: Mock
+        self, zip_package_mock: Mock, find_paths_mock: Mock, read_gitignore_mock: Mock
     ):
-        find_excludes_mock.return_value = ["gitignoreex"]
+        read_gitignore_mock.return_value = ["gitignoreex"]
         find_paths_mock.return_value = ("mypaths", "")
         package(configuration=Configuration())
 
-        find_excludes_mock.assert_called_once()
+        read_gitignore_mock.assert_called_once()
         find_paths_mock.assert_called_once_with(root_path=ANY, excludes=["gitignoreex"])
 
-    @mock.patch("lambda_package.lambda_package.find_excludes")
+    @mock.patch("lambda_package.lambda_package.read_gitignore")
     @mock.patch("lambda_package.lambda_package.find_paths")
     @mock.patch("lambda_package.lambda_package.zip_package")
     def test_when_config_has_excludes_then_do_not_read_gitignore(
-        self, zip_package_mock: Mock, find_paths_mock: Mock, find_excludes_mock: Mock
+        self, zip_package_mock: Mock, find_paths_mock: Mock, read_gitignore_mock: Mock
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ("mypaths", "")
         package(configuration=Configuration(exclude=["myexclude"]))
 
-        find_excludes_mock.assert_not_called()
+        read_gitignore_mock.assert_not_called()
         find_paths_mock.assert_called_once_with(root_path=ANY, excludes=["myexclude"])

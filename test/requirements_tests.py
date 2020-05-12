@@ -85,5 +85,5 @@ class RequirementsTests(unittest.TestCase):
         )
 
         subprocess_run_mock.assert_called_once_with(
-            ["pip", "install", "-t", expected_temp_dir, "-r", "my_requirements"]
+            ["pip5.6", "install", "-t", expected_temp_dir, "-r", "my_requirements"]
         )

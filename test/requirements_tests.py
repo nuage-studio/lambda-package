@@ -4,7 +4,7 @@ from unittest import mock
 from unittest.mock import Mock
 
 from lambda_package.configuration import Configuration
-from lambda_package.requirements import TempDir, build_requirements
+from lambda_package.requirements import CacheDirName, TempDir, build_requirements
 
 
 @mock.patch("lambda_package.requirements.run")
@@ -41,7 +41,7 @@ class RequirementsTests(unittest.TestCase):
 
         run_mock.assert_called_once_with(
             "lambci/lambda:build-python5.6",
-            f"pip install -t /var/task/ -r /var/task/my_requirements",
+            f"pip install -t /var/task/ -r /var/task/my_requirements --cache-dir {TempDir}/{CacheDirName}/docker_5.6",
             volumes={str(expected_temp_dir): {"bind": "/var/task", "mode": "z"}},
         )
 
@@ -85,5 +85,14 @@ class RequirementsTests(unittest.TestCase):
         )
 
         subprocess_run_mock.assert_called_once_with(
-            ["pip5.6", "install", "-t", expected_temp_dir, "-r", "my_requirements"]
+            [
+                "pip5.6",
+                "install",
+                "-t",
+                str(expected_temp_dir),
+                "-r",
+                "my_requirements",
+                "--cache-dir",
+                f"{TempDir}/{CacheDirName}/local_5.6",
+            ]
         )

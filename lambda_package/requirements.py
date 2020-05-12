@@ -57,8 +57,17 @@ def build_requirements_docker(configuration: Configuration):
 
 def build_requirements_local(configuration: Configuration):
     temp_dir = create_temp_requirements_directory()
-    print("temp dir ", temp_dir)
-    run(["pip", "install", "-t", temp_dir, "-r", configuration.requirements])
+    python_version = normalize_version(configuration.python_version)
+    run(
+        [
+            f"pip{python_version}",
+            "install",
+            "-t",
+            temp_dir,
+            "-r",
+            configuration.requirements,
+        ]
+    )
     return temp_dir
 
 

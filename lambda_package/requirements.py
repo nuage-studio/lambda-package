@@ -15,9 +15,24 @@ temporary directory, either using Docker or using pip on the local machine.
 """
 
 TempDir = gettempdir()
+"""
+The root of the directory for creating temporary build directories and the shared cache
+"""
+
 CacheDirName = "lambda_package_cache"
+"""
+The name of the shared cache directory
+"""
+
 DockerImagePrefix = "lambci/lambda:build-python"
+"""
+The name of the Docker image, to which the Python version will be appended
+"""
+
 VersionRegex = compile("(^[0-9]+\\.[0-9]+)(\\.[0-9]+)?$")
+"""
+Regex for parsing the Python version string
+"""
 
 
 def build_requirements(configuration: Configuration) -> str:
@@ -33,6 +48,9 @@ def build_requirements(configuration: Configuration) -> str:
 
 
 def build_requirements_docker(configuration: Configuration):
+    """
+    Builds pip dependencies into a temporary directory using a Docker image
+    """
 
     temp_dir = create_temp_requirements_directory()
 
@@ -60,6 +78,9 @@ def build_requirements_docker(configuration: Configuration):
 
 
 def build_requirements_local(configuration: Configuration):
+    """
+    Builds pip dependencies into a temporary directory using the local version of pip
+    """
     temp_dir = create_temp_requirements_directory()
     python_version = normalize_version(configuration.python_version)
     cache_dir = get_cache_directory(f"local_{python_version}")
@@ -96,7 +117,11 @@ def generate_temp_directory_name():
     return f"requirements_dir_{timestamp}_{random_chars}"
 
 
-def get_cache_directory(label: str) -> str:
+def get_cache_directory(label: str) -> Path:
+    """
+    Returns the full path of a cache directory.  Creates the direcctory if it does
+    not exist.
+    """
     path = Path(TempDir).joinpath(CacheDirName).joinpath(label)
     path.mkdir(parents=True, exist_ok=True)
     return path

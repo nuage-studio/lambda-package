@@ -143,7 +143,11 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock.return_value = ([Path("mypath")], "")
         build_requirements_mock.return_value = Path("my_temp_dir")
         get_files_in_directory_mock.return_value = [Path("my_temp_dir/myreqfile")]
-        package(configuration=Configuration(requirements="my_requirements"))
+        package(
+            configuration=Configuration(
+                requirements="my_requirements", output="my_output"
+            )
+        )
         build_requirements_mock.assert_called_once()
 
     def test_when_requirements_not_given_then_do_not_call_build_requirements(
@@ -159,6 +163,25 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_excludes_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypaths")], "")
         package(configuration=Configuration())
+        build_requirements_mock.assert_not_called()
+
+    def test_when_requirements_given_but_not_layer_or_output_then_build_requirements_not_called(
+        self,
+        get_files_in_directory_mock: Mock,
+        build_requirements_mock: Mock,
+        read_gitignore_mock: Mock,
+        create_from_config_file_mock: Mock,
+        zip_package_mock: Mock,
+        find_paths_mock: Mock,
+        rmtree_mock: Mock,
+    ):
+        read_gitignore_mock.return_value = []
+        find_paths_mock.return_value = ([Path("mypaths")], "")
+        package(
+            configuration=Configuration(
+                requirements="my_requirements.txt", output=None, layer_output=None
+            )
+        )
         build_requirements_mock.assert_not_called()
 
     def test_when_requirements_given_and_no_layer_output_given_then_add_files_to_main_zip(
@@ -246,4 +269,62 @@ class LambdaPackagePackageTests(unittest.TestCase):
 
         zip_package_mock.assert_any_call(
             paths=[(Path("mypath1"), Path("mypath1"))], fp="my_output",
+        )
+
+    def test_when_requirements_and_layer_output_given_but_not_output_then_layer_zip_created(
+        self,
+        get_files_in_directory_mock: Mock,
+        build_requirements_mock: Mock,
+        read_gitignore_mock: Mock,
+        create_from_config_file_mock: Mock,
+        zip_package_mock: Mock,
+        find_paths_mock: Mock,
+        rmtree_mock: Mock,
+    ):
+        read_gitignore_mock.return_value = []
+        find_paths_mock.return_value = ([Path("mypath1")], "")
+        build_requirements_mock.return_value = Path("my_temp_dir")
+
+        get_files_in_directory_mock.return_value = [
+            Path("my_temp_dir/req_file_1"),
+            Path("my_temp_dir/req_file_2"),
+            Path("my_temp_dir/req_file_3"),
+        ]
+
+        package(
+            configuration=Configuration(
+                requirements="my_requirements", layer_output="layer_out", output=None,
+            )
+        )
+
+        get_files_in_directory_mock.assert_called_once_with(Path("my_temp_dir"))
+
+        zip_package_mock.assert_called_once_with(
+            paths=[
+                (Path("my_temp_dir/req_file_1"), Path("req_file_1")),
+                (Path("my_temp_dir/req_file_2"), Path("req_file_2")),
+                (Path("my_temp_dir/req_file_3"), Path("req_file_3")),
+            ],
+            fp="layer_out",
+        )
+
+    def test_when_requirements_not_given_layer_output_given_then_raise_exception(
+        self,
+        get_files_in_directory_mock: Mock,
+        build_requirements_mock: Mock,
+        read_gitignore_mock: Mock,
+        create_from_config_file_mock: Mock,
+        zip_package_mock: Mock,
+        find_paths_mock: Mock,
+        rmtree_mock: Mock,
+    ):
+        read_gitignore_mock.return_value = []
+        find_paths_mock.return_value = ([Path("mypath1")], "")
+        self.assertRaisesRegex(
+            ValueError,
+            "Layer output parameter cannot be given without requirements parameter",
+            package,
+            configuration=Configuration(
+                requirements=None, layer_output="my_layer_output"
+            ),
         )

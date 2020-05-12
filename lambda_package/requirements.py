@@ -15,6 +15,8 @@ temporary directory, either using Docker or using pip on the local machine.
 """
 
 TempDir = gettempdir()
+CacheDirName = "lambda_package_cache"
+DockerImagePrefix = "lambci/lambda:build-python"
 VersionRegex = compile("(^[0-9]+\\.[0-9]+)(\\.[0-9]+)?$")
 
 
@@ -43,9 +45,11 @@ def build_requirements_docker(configuration: Configuration):
     client = from_env()
     vols = {str(temp_dir): {"bind": "/var/task", "mode": "z"}}
     python_version = normalize_version(configuration.python_version)
+    cache_dir = get_cache_directory(f"docker_{python_version}")
+
     client.containers.run(
-        f"lambci/lambda:build-python{python_version}",
-        f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name}",
+        f"{DockerImagePrefix}{python_version}",
+        f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name} --cache-dir {cache_dir}",
         volumes=vols,
     )
 
@@ -58,14 +62,17 @@ def build_requirements_docker(configuration: Configuration):
 def build_requirements_local(configuration: Configuration):
     temp_dir = create_temp_requirements_directory()
     python_version = normalize_version(configuration.python_version)
+    cache_dir = get_cache_directory(f"local_{python_version}")
     run(
         [
             f"pip{python_version}",
             "install",
             "-t",
-            temp_dir,
+            str(temp_dir),
             "-r",
             configuration.requirements,
+            "--cache-dir",
+            str(cache_dir),
         ]
     )
     return temp_dir
@@ -86,7 +93,13 @@ def generate_temp_directory_name():
     """
     random_chars = "".join(choice(ascii_lowercase) for i in range(8))
     timestamp = datetime.now().strftime("%d%m%Y%H%M%S")
-    return f"requirements_task_dir_{timestamp}_{random_chars}"
+    return f"requirements_dir_{timestamp}_{random_chars}"
+
+
+def get_cache_directory(label: str) -> str:
+    path = Path(TempDir).joinpath(CacheDirName).joinpath(label)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def normalize_version(version_string):

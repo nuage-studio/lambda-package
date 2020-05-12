@@ -17,14 +17,11 @@ def main():
 
     (_, tree) = package(root_path=args.path, configuration=configuration)
 
-    if not configuration.output:
-        if configuration.requirements and configuration.layer_output:
-            print(
-                f"Configured to create layer package file {configuration.layer_output}"
-            )
+    if not configuration.output and not configuration.layer_output:
         print_tree(tree)
     else:
-        print(f"Successfully created package {configuration.output}")
+        if configuration.output:
+            print(f"Successfully created package {configuration.output}")
         if configuration.requirements and configuration.layer_output:
             print(f"Successfully created layer package {configuration.layer_output}")
 

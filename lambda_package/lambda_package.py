@@ -32,18 +32,18 @@ def package(root_path=".", configuration: Configuration = None):
                     meet the exclusion criteria
     """
 
-    if not configuration:
-        configuration = Configuration.create_from_config_file()
+    configuration = validate_configuration(configuration)
 
-    if not configuration.exclude:
-        configuration.exclude = read_gitignore()
-
-    (paths, tree) = find_paths(
+    (source_paths, source_tree) = find_paths(
         root_path=Path(root_path), excludes=configuration.exclude
     )
-    zip_paths = get_zip_package_paths(paths=paths, root_dir=root_path)
+    zip_paths = get_zip_package_paths(paths=source_paths, root_dir=root_path)
 
-    if configuration.requirements:
+    will_build_requirements = configuration.requirements and (
+        configuration.output or configuration.layer_output
+    )
+
+    if will_build_requirements:
         requirements_dir = build_requirements(configuration)
         requirements_files = get_files_in_directory(requirements_dir)
         requirements_zip_paths = get_zip_package_paths(
@@ -60,10 +60,30 @@ def package(root_path=".", configuration: Configuration = None):
     if configuration.output:
         zip_package(paths=zip_paths, fp=configuration.output)
 
-    if configuration.requirements:
+    if will_build_requirements:
         rmtree(requirements_dir)
 
-    return (paths, tree)
+    return (source_paths, source_tree)
+
+
+def validate_configuration(configuration: Configuration) -> Configuration:
+    """
+    Validates the configuration.  If configuration is `None`, it will be
+    read from disk.
+    """
+
+    if not configuration:
+        configuration = Configuration.create_from_config_file()
+
+    if not configuration.exclude:
+        configuration.exclude = read_gitignore()
+
+    if configuration.layer_output and not configuration.requirements:
+        raise ValueError(
+            "Layer output parameter cannot be given without requirements parameter"
+        )
+
+    return configuration
 
 
 def read_gitignore():

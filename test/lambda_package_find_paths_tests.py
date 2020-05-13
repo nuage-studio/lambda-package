@@ -4,7 +4,7 @@ from pathlib import Path
 from lambda_package import find_paths
 
 
-class PackageTests(unittest.TestCase):
+class PackageFindPathsTests(unittest.TestCase):
     def test_find_paths_list(self):
         (excludes, dirs) = get_test_data()
         (paths, tree) = find_paths(dirs, excludes)

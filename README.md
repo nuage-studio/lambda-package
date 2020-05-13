@@ -2,7 +2,8 @@
 
 This repository provides both a library function and command-line tool to package up Lambda functions.
 Given a directory, it will package all the files in the directory into a zip file, but ignoring any files
-covered by the `.gitignore` file in the current directory.
+covered exclude patterns.  If exclude patterns are not given in the configuation, then these patterns
+will be read from the `.gitignore` file.
 
 ## Command line useage
 
@@ -25,8 +26,33 @@ as the command line.  For example:
 ```python
 from lambda_package import package
 
-package(root_path="src", output_file="app.zip")
+package(root_path="src", Configuration(output="app.zip"))
 ```
+
+## Configuration
+
+Further configuration can be specified in either the `.lambda-packagerc` or `setup.cfg`
+files, with the former taking priority.  The `package` function will look for these
+files by default if no `Configuration` object is passed in.
+
+An example `.lambda-packagerc` might be:
+
+```toml
+[lambda-package]
+output = "app.zip"
+exclude = ["node_modules", "*.bak"]
+```
+
+Note that the `exclude` option overrides any patterns in the `.gitignore` file.
+
+| Name             | Default | Description                                                                           |
+|------------------|---------|---------------------------------------------------------------------------------------|
+| `output`         | `None`  | The path of the zip file to be generated                                              |
+| `exclude`        | `None`  | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
+| `requirements`   | `None`  | The path to the requirements.txt file if Python dependencies are to be packaged.      |
+| `layer_output`   | `None`  | Path to a folder where requirement outputs should be stored rather than the package.  |
+| `use_docker`     | `True`  | Whether or not the Lambda layer dependencies should be compiled using a Docker image. |
+| `python_version` | _Runtime version_  | The Python version used by Docker to package the requirements.             |
 
 
 # Development
@@ -68,3 +94,11 @@ Code quality configuration files:
 - IDE-agnostic coding style settings are set in the [.editorconfig](.editorconfig) file
 - Python-related settings are set in the [setup.cfg](setup.cfg) file
 - Pre-commit-related settings are set in the [.pre-commit-config.yaml](.pre-commit-config.yaml) file
+
+## Unit tests
+
+* To run the unit tests (you may also want to instantiate a virtual environment in the root directory):
+
+```
+python setup.py test
+```

@@ -1,4 +1,5 @@
 import argparse
+from argparse import Namespace
 
 from lambda_package.configuration import Configuration
 
@@ -12,8 +13,8 @@ def main():
     parser = argparse.ArgumentParser("lambda_package")
     add_arguments(parser)
     args = parser.parse_args()
-    configuration = Configuration.create_from_config_file()
-    configuration.output = args.output if args.output else configuration.output
+
+    configuration = get_configuration(args)
 
     (_, tree) = package(root_path=args.path, configuration=configuration)
 
@@ -26,6 +27,30 @@ def main():
             print(f"Successfully created layer package {configuration.layer_output}")
 
 
+def get_configuration(args: Namespace) -> Configuration:
+    """
+    Creates and validates an application configuration based on configuration files
+    and the command line arguments.
+    """
+
+    configuration = Configuration.create_from_config_file()
+
+    if args.layer_only:
+        if args.output:
+            raise ValueError(
+                "The --layer-only and --output parameters cannot be used together"
+            )
+
+        if not configuration.layer_output:
+            raise ValueError("A layer output must be specified when using --layer-only")
+
+        configuration.output = None
+    else:
+        configuration.output = args.output if args.output else configuration.output
+
+    return configuration
+
+
 def add_arguments(parser):
     parser.add_argument(
         "path", default=".", help="The path of the package source files.",
@@ -35,6 +60,13 @@ def add_arguments(parser):
         "--output",
         required=False,
         help="Specifies file to which the output is written.",
+    )
+    parser.add_argument(
+        "-l",
+        "--layer-only",
+        required=False,
+        action="store_true",
+        help="Overrides the configuration to prevent the main lambda package being generated",
     )
 
 

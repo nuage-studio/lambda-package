@@ -17,6 +17,15 @@ where `path` is the path to the source directory which you wish to package, and 
 `--output` (or `-o`) option specifies the zip file output.  If no `-o` option is given,
 the tool will display a preview of the file tree which it would package.
 
+If you have also specified a layer output (see "Configuration" below), you can choose
+to override any configuration files and prevent the main lambda package from being
+generated with the `--layer-only` option:
+
+```
+python -m lambda_package path --layer-only
+```
+
+This command effectively sets the lambda package output parameter, `output`, to `None`.
 
 ## Library usage
 
@@ -47,7 +56,7 @@ Note that the `exclude` option overrides any patterns in the `.gitignore` file.
 
 | Name             | Default | Description                                                                           |
 |------------------|---------|---------------------------------------------------------------------------------------|
-| `output`         | `None`  | The path of the zip file to be generated                                              |
+| `output`         | `None`  | The path of the lambda zip file to be generated.                                      |
 | `exclude`        | `None`  | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
 | `requirements`   | `None`  | The path to the requirements.txt file if Python dependencies are to be packaged.      |
 | `layer_output`   | `None`  | Path to a folder where requirement outputs should be stored rather than the package.  |

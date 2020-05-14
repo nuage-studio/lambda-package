@@ -105,11 +105,11 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = ["gitignoreex"]
+        read_gitignore_mock.return_value = ["gitignoreex"]
         find_paths_mock.return_value = ([Path("mypaths")], "")
         package(configuration=Configuration())
 
-        find_excludes_mock.assert_called_once()
+        read_gitignore_mock.assert_called_once()
         find_paths_mock.assert_called_once_with(root_path=ANY, excludes=["gitignoreex"])
 
     def test_when_config_has_excludes_then_do_not_read_gitignore(
@@ -122,11 +122,11 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypaths")], "")
         package(configuration=Configuration(exclude=["myexclude"]))
 
-        find_excludes_mock.assert_not_called()
+        read_gitignore_mock.assert_not_called()
         find_paths_mock.assert_called_once_with(root_path=ANY, excludes=["myexclude"])
 
     def test_when_requirements_given_then_call_build_requirements(
@@ -139,7 +139,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath")], "")
         build_requirements_mock.return_value = Path("my_temp_dir")
         get_files_in_directory_mock.return_value = [Path("my_temp_dir/myreqfile")]
@@ -160,7 +160,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypaths")], "")
         package(configuration=Configuration())
         build_requirements_mock.assert_not_called()
@@ -194,7 +194,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath1")], "")
         build_requirements_mock.return_value = Path("my_temp_dir")
 
@@ -238,7 +238,7 @@ class LambdaPackagePackageTests(unittest.TestCase):
         find_paths_mock: Mock,
         rmtree_mock: Mock,
     ):
-        find_excludes_mock.return_value = []
+        read_gitignore_mock.return_value = []
         find_paths_mock.return_value = ([Path("mypath1")], "")
         build_requirements_mock.return_value = Path("my_temp_dir")
 

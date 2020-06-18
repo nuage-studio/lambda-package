@@ -1,0 +1,30 @@
+name: coding_style
+
+# This is a Github Action workflow which checks coding style using flake8
+# (via pre-commit) whenever a commit is made to master
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Checkout the code and install Python
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+
+    # These steps set up the pre-commit cache, and run pre-commit.  See
+    # https://github.com/marketplace/actions/pre-commit for more information.
+    - name: set PY environment variable
+      run: echo "::set-env name=PY::$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')"
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - uses: pre-commit/action@v1.1.0
+      with:
+        extra_args: flake8

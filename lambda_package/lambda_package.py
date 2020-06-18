@@ -5,8 +5,9 @@ from shutil import rmtree
 from typing import List, Tuple
 
 import pathspec
-from lambda_package.configuration import Configuration
-from lambda_package.requirements import build_requirements
+
+from .configuration import Configuration
+from .requirements import build_requirements
 
 
 def package(root_path=".", configuration: Configuration = None):
@@ -171,5 +172,4 @@ def zip_package(paths: List[Path], fp, compression=zipfile.ZIP_DEFLATED):
         file=fp, mode="w", compression=compression, compresslevel=9
     ) as z:
         for path in paths:
-            (local_path, zip_path) = path
             z.write(filename=str(path[0]), arcname=str(path[1]))

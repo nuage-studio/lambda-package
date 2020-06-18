@@ -1,5 +1,5 @@
 from pathlib import Path
-from platform import python_version
+from platform import python_version as get_python_version
 from typing import List, Optional
 
 from toml import load
@@ -65,7 +65,7 @@ class Configuration:
         requirements: Optional[str] = None,
         layer_output: Optional[str] = None,
         use_docker: Optional[bool] = True,
-        python_version: Optional[str] = python_version(),
+        python_version: Optional[str] = get_python_version(),
     ):
         self.output = output
         self.exclude = exclude

@@ -1,18 +1,20 @@
+"""
+The functions in this file help to build an Lambda's Python requirements into a
+temporary directory, either using Docker or using pip on the local machine.
+"""
+
 from datetime import datetime
+from pathlib import Path
 from random import choice
-from re import compile
+from re import compile as re_compile
 from shutil import copy
 from string import ascii_lowercase
 from subprocess import run
 from tempfile import gettempdir
 
 from docker import from_env
-from lambda_package.lambda_package import Configuration, Path
 
-"""
-The functions in this file help to build an Lambda's Python requirements into a
-temporary directory, either using Docker or using pip on the local machine.
-"""
+from .configuration import Configuration
 
 TempDir = gettempdir()
 """
@@ -29,7 +31,7 @@ DockerImagePrefix = "lambci/lambda:build-python"
 The name of the Docker image, to which the Python version will be appended
 """
 
-VersionRegex = compile("(^[0-9]+\\.[0-9]+)(\\.[0-9]+)?$")
+VersionRegex = re_compile("(^[0-9]+\\.[0-9]+)(\\.[0-9]+)?$")
 """
 Regex for parsing the Python version string
 """
@@ -43,8 +45,8 @@ def build_requirements(configuration: Configuration) -> str:
     """
     if configuration.use_docker:
         return build_requirements_docker(configuration)
-    else:
-        return build_requirements_local(configuration)
+
+    return build_requirements_local(configuration)
 
 
 def build_requirements_docker(configuration: Configuration):
@@ -67,7 +69,10 @@ def build_requirements_docker(configuration: Configuration):
 
     client.containers.run(
         f"{DockerImagePrefix}{python_version}",
-        f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name} --cache-dir {cache_dir}",
+        (
+            f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name} "
+            f"--cache-dir {cache_dir}"
+        ),
         volumes=vols,
     )
 
@@ -94,7 +99,8 @@ def build_requirements_local(configuration: Configuration):
             configuration.requirements,
             "--cache-dir",
             str(cache_dir),
-        ]
+        ],
+        check=True,
     )
     return temp_dir
 
@@ -138,7 +144,10 @@ def normalize_version(version_string):
 
     if m is None:
         raise ValueError(
-            f"Invalid Python version: '{version_string}'.  Version must be in the form [major].[minor]"
+            (
+                f"Invalid Python version: '{version_string}'.  ",
+                "Version must be in the form [major].[minor]",
+            )
         )
 
     return m.group(1)

@@ -94,5 +94,6 @@ class RequirementsTests(unittest.TestCase):
                 "my_requirements",
                 "--cache-dir",
                 f"{TempDir}/{CacheDirName}/local_5.6",
-            ]
+            ],
+            check=True,
         )

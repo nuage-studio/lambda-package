@@ -1,5 +1,10 @@
 # Nuage Lambda Packaging
 
+![Code formatting badge](https://img.shields.io/github/workflow/status/nuage-studio/lambda-package/code_formatting?label=code%20formatting "Code formatting badge")
+![Code quality badge](https://img.shields.io/github/workflow/status/nuage-studio/lambda-package/code_quality?label=code%20quality "Code quality badge")
+![Coding style badge](https://img.shields.io/github/workflow/status/nuage-studio/lambda-package/coding_style?label=coding%20style "Coding style badge")
+![Unit tests badge](https://img.shields.io/github/workflow/status/nuage-studio/lambda-package/unit_tests?label=unit%20tests "Unit tests badge")
+
 This repository provides both a library function and command-line tool to package up Lambda functions.
 Given a directory, it will package all the files in the directory into a zip file, but ignoring any files
 covered exclude patterns.  If exclude patterns are not given in the configuation, then these patterns

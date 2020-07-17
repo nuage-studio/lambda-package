@@ -12,3 +12,6 @@ install:
 
 quality:
 	pre-commit run --all-files
+
+package:
+	python3 setup.py sdist

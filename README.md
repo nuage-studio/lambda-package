@@ -51,7 +51,7 @@ Note that the `exclude` option overrides any patterns in the `.gitignore` file.
 | `exclude`        | `None`  | A list of exclude pattern strings.  If not given, `.gitignore` is used instead.       |
 | `requirements`   | `None`  | The path to the requirements.txt file if Python dependencies are to be packaged.      |
 | `layer_output`   | `None`  | Path to a folder where requirement outputs should be stored rather than the package.  |
-| `use_docker`     | `True`  | Whether or not the Lambda layer dependencies should be built using a Docker image.    |
+| `use_docker`     | `true`  | Whether or not the Lambda layer dependencies should be built using a Docker image.    |
 | `python_version` | _Runtime version_  | The Python version used to build the pip requirements.  Must be in the format `[major].[minor]`, patch version will be ignored. |
 
 ## Pip Dependencies

@@ -1,6 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
-    "python.envFile": "${workspaceFolder}/.env",
+    "python.pythonPath": ".venv/bin/python",
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,

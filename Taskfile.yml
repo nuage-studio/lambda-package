@@ -1,0 +1,56 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  VENV: .venv
+  PYTHON: "{{.VENV}}/bin/python"
+
+tasks:
+  ####################################################################################
+  ### Install
+  ####################################################################################
+
+  install:
+    deps: [poetry]
+
+  upgrade:
+    summary: Updates dependencies to the latest available version
+    cmds:
+      - poetry update
+
+  poetry:
+    deps: [virtualenv]
+    preconditions:
+      - command -v poetry
+    cmds:
+      - poetry install
+    sources:
+      - pyproject.toml
+      - poetry.lock
+
+  virtualenv:
+    summary: Create a Python 3 virtualenv
+    cmds:
+      - python3 -m venv {{.VENV}}
+    status:
+      - test -d {{.VENV}}
+
+  ######################################################################################
+  ### Build
+  ######################################################################################
+
+  lint:
+    summary: Apply code quality constraints on the code
+    deps: [poetry]
+    cmds:
+      - pre-commit run --all-files
+
+  test:
+    summary: Run unit tests
+    deps: [poetry]
+    cmds:
+      - "{{.PYTHON}} -m unittest test/*.py"
+    sources:
+      - "lambda_package/*.py"
+      - "test/*.py"

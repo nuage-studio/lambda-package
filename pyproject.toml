@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "lambda-package"
+version = "0.1.0"
+description = "Pure-python utility for packaging AWS Lambda functions"
+authors = ["Louis Amon <louis@nuage.studio>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.6.0"
+flake8 = "^3.8.4"
+black = "^20.8b1"
+pre-commit = "^2.7.1"
+pre-commit-hooks = "^3.2.0"
+tox = "^3.20.1"
+docker = "^4.3.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

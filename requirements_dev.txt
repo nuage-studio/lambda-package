@@ -1,8 +1,0 @@
---requirement requirements.txt
-
-# Code quality
-pylint==2.4.4
-pre-commit==2.1.0
-pre-commit-hooks==2.5.0
-black==19.10b0
-flake8==3.7.9

@@ -7,6 +7,7 @@ from subprocess import run
 from tempfile import gettempdir
 
 from docker import from_env
+
 from lambda_package.lambda_package import Configuration, Path
 
 """
@@ -67,7 +68,10 @@ def build_requirements_docker(configuration: Configuration):
 
     client.containers.run(
         f"{DockerImagePrefix}{python_version}",
-        f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name} --cache-dir {cache_dir}",
+        (
+            f"pip install -t /var/task/ -r /var/task/{requirements_dest_path.name} "
+            f"--cache-dir {cache_dir}"
+        ),
         volumes=vols,
     )
 
@@ -138,7 +142,8 @@ def normalize_version(version_string):
 
     if m is None:
         raise ValueError(
-            f"Invalid Python version: '{version_string}'.  Version must be in the form [major].[minor]"
+            f"Invalid Python version: '{version_string}'. "
+            "Version must be in the form [major].[minor]"
         )
 
     return m.group(1)

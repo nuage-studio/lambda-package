@@ -268,7 +268,8 @@ class LambdaPackagePackageTests(unittest.TestCase):
         )
 
         zip_package_mock.assert_any_call(
-            paths=[(Path("mypath1"), Path("mypath1"))], fp="my_output",
+            paths=[(Path("mypath1"), Path("mypath1"))],
+            fp="my_output",
         )
 
     def test_when_requirements_and_layer_output_given_but_not_output_then_layer_zip_created(
@@ -293,7 +294,9 @@ class LambdaPackagePackageTests(unittest.TestCase):
 
         package(
             configuration=Configuration(
-                requirements="my_requirements", layer_output="layer_out", output=None,
+                requirements="my_requirements",
+                layer_output="layer_out",
+                output=None,
             )
         )
 

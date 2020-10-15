@@ -28,7 +28,9 @@ def main():
 
 def add_arguments(parser):
     parser.add_argument(
-        "path", default=".", help="The path of the package source files.",
+        "path",
+        default=".",
+        help="The path of the package source files.",
     )
     parser.add_argument(
         "-o",

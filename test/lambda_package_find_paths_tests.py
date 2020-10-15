@@ -16,7 +16,12 @@ class LambdaPackageFindPathsTests(unittest.TestCase):
 
         self.assertSetEqual(
             set(path_strings),
-            {"something.png", "bar/nothello", "a/goo.txt", "a/b/goo.txt",},
+            {
+                "something.png",
+                "bar/nothello",
+                "a/goo.txt",
+                "a/b/goo.txt",
+            },
         )
 
     def test_find_paths_tree(self):
@@ -26,7 +31,12 @@ class LambdaPackageFindPathsTests(unittest.TestCase):
 
         self.assertSetEqual(
             set(files_list),
-            {"something.png", "bar/nothello", "a/goo.txt", "a/b/goo.txt",},
+            {
+                "something.png",
+                "bar/nothello",
+                "a/goo.txt",
+                "a/b/goo.txt",
+            },
         )
 
 

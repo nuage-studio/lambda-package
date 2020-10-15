@@ -41,7 +41,7 @@ tasks:
   ######################################################################################
 
   lint:
-    summary: Apply code quality constraints on the code
+    summary: Apply code quality constraints to the code
     deps: [poetry]
     cmds:
       - pre-commit run --all-files
@@ -51,6 +51,3 @@ tasks:
     deps: [poetry]
     cmds:
       - "{{.PYTHON}} -m unittest test/*.py"
-    sources:
-      - "lambda_package/*.py"
-      - "test/*.py"

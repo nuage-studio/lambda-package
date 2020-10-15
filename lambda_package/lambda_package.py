@@ -5,6 +5,7 @@ from shutil import rmtree
 from typing import List, Tuple
 
 import pathspec
+
 from lambda_package.configuration import Configuration
 from lambda_package.requirements import build_requirements
 
@@ -52,7 +53,8 @@ def package(root_path=".", configuration: Configuration = None):
 
         if configuration.layer_output:
             zip_package(
-                paths=requirements_zip_paths, fp=configuration.layer_output,
+                paths=requirements_zip_paths,
+                fp=configuration.layer_output,
             )
         else:
             zip_paths.extend(requirements_zip_paths)
